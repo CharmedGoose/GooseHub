@@ -17,7 +17,7 @@ export default function Navbar() {
               class="w-3/4 px-4 py-2 rounded-md border bg-zinc-700 text-white border-zinc-700 focus:border-orange-400 focus:outline-none"
             />
           </div>
-          <a href="/auth">Sign In</a>
+          <a href="/signin">Login</a>
         </div>
       </nav>
     </div>

@@ -8,6 +8,7 @@ import "$std/dotenv/load.ts";
 
 import { start } from "$fresh/server.ts";
 import manifest from "./fresh.gen.ts";
-import config from "./fresh.config.ts";
+import tailwind from "$fresh/plugins/tailwind.ts";
+import kv_oauth from "./plugins/kv_oauth.ts";
 
-await start(manifest, config);
+await start(manifest, { plugins: [tailwind(), kv_oauth ] });
