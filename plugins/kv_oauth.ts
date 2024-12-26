@@ -1,8 +1,8 @@
-import { createGitHubOAuthConfig, createHelpers } from "jsr:@deno/kv-oauth";
+import { createDiscordOAuthConfig, createHelpers } from "jsr:@deno/kv-oauth";
 import type { Plugin } from "$fresh/server.ts";
 
 const { signIn, handleCallback, signOut, getSessionId } = createHelpers(
-  createGitHubOAuthConfig(),
+    createDiscordOAuthConfig({ redirectUri: "http://localhost:8000/callback", scope: "identify" })
 );
 
 export default {
