@@ -1,10 +1,10 @@
 import { Head } from "$fresh/runtime.ts";
 import Navbar from "../components/Navbar.tsx";
 
-export default function Error404() {
+export default function Error404(request: Request) {
   return (
     <div>
-      <Navbar />
+      <Navbar request={request} />
       <Head>
         <title>404 - Page not found</title>
       </Head>
