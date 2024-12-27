@@ -1,9 +1,18 @@
 import type { Plugin } from "$fresh/server.ts";
+import { User, createOrUpdateUser, deleteUserBySession, getUser } from "../utils/db.ts";
 import helpers from "../utils/oauth.ts";
+
+interface DiscordUser {
+  id: string;
+  username: string;
+  avatar: string;
+  email: string;
+  verified: boolean;
+}
 
 export default {
   name: "kv-oauth",
-  routes: [ 
+  routes: [
     {
       path: "/signin",
       async handler(req) {
@@ -13,8 +22,40 @@ export default {
     {
       path: "/callback",
       async handler(req) {
-        // Return object also includes `accessToken` and `sessionId` properties.
-        const { response } = await helpers.handleCallback(req);
+        const { response, sessionId, tokens } = await helpers.handleCallback(
+          req,
+        );
+
+        const discordResponse = await fetch(
+          "https://discord.com/api/users/@me",
+          {
+            headers: {
+              Authorization: `${tokens.tokenType} ${tokens.accessToken}`,
+            },
+          },
+        );
+
+        const discordUser: DiscordUser = await discordResponse.json();
+
+        if (!discordUser.verified) return new Response("Email not verified", { status: 400 });
+
+        const user = await getUser(discordUser.id);
+
+        if (user) {
+          await deleteUserBySession(sessionId);
+          await createOrUpdateUser({ ...user, sessionId });
+        } else {
+          const newUser: User = {
+            id: discordUser.id,
+            sessionId,
+            username: discordUser.username,
+            avatar: discordUser.avatar,
+            email: discordUser.email,
+          }
+
+          await createOrUpdateUser(newUser);
+        }
+
         return response;
       },
     },
