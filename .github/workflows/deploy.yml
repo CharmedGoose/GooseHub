@@ -10,6 +10,11 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
 
+    env:
+      DISCORD_CLIENT_ID: ${{ secrets.DISCORD_CLIENT_ID }}
+      DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET }}
+      DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
+
     permissions:
       id-token: write # Needed for auth with Deno Deploy
       contents: read # Needed to clone the repository
