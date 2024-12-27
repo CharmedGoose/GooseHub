@@ -36,7 +36,7 @@ export default {
         );
 
         const discordUser: DiscordUser = await discordResponse.json();
-
+        
         if (!discordUser.verified) return new Response("Email not verified", { status: 400 });
 
         const user = await getUser(discordUser.id);
