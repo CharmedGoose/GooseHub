@@ -1,9 +1,4 @@
-import helpers from "../utils/oauth.ts";
-
-export interface NavbarProps {
-  request: Request;
-}
-export default function Navbar(props: NavbarProps) {
+export default function Navbar() {
   return (
     <div>
       <nav class="flex items-center px-8 py-4 bg-zinc-800 text-white">
@@ -22,9 +17,7 @@ export default function Navbar(props: NavbarProps) {
               class="w-3/4 px-4 py-2 rounded-md border bg-zinc-700 text-white border-zinc-700 focus:border-orange-400 focus:outline-none"
             />
           </div>
-          {helpers.getSessionId(props.request) == undefined
-            ? <a href="/signin">Login</a>
-            : <a href="/signout">Logout</a>}
+          <a href="/signin">Login</a>
         </div>
       </nav>
     </div>
