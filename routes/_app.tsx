@@ -8,7 +8,6 @@ export default function App({ Component, state }: PageProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>GooseHub</title>
         <link rel="stylesheet" href="/styles.css" />
-        <link rel="shortcut icon" href="/favicon.ico" />
       </head>
       <body>
         <Navbar sessionId={state.sessionId as string | undefined} />
