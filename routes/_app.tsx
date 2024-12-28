@@ -1,5 +1,6 @@
 import { type PageProps } from "$fresh/server.ts";
 import Navbar from "../components/Navbar.tsx";
+import { User } from "../utils/db.ts";
 export default function App({ Component, state }: PageProps) {
   return (
     <html class="bg-black">
@@ -10,7 +11,7 @@ export default function App({ Component, state }: PageProps) {
         <link rel="stylesheet" href="/styles.css" />
       </head>
       <body>
-        <Navbar sessionId={state.sessionId as string | undefined} />
+        <Navbar user={state.user as User | undefined} />
         <Component />
       </body>
     </html>

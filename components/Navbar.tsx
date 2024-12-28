@@ -1,5 +1,7 @@
+import { User } from "../utils/db.ts";
+
 interface NavbarProps {
-  sessionId?: string;
+  user?: User;
 }
 
 export default function Navbar(props: NavbarProps) {
@@ -21,10 +23,16 @@ export default function Navbar(props: NavbarProps) {
               class="w-3/4 px-4 py-2 rounded-md border bg-zinc-700 text-white border-zinc-700 focus:border-orange-400 focus:outline-none"
             />
           </div>
-          {props.sessionId
-            ? <a href="/signout">Logout</a>
-            : <a href="/signin">Login</a>
-          }
+          {props.user
+            ? (
+              <a href="/signout">
+                <img
+                  src={`https://cdn.discordapp.com/avatars/${props.user.id}/${props.user.avatar}.png`}
+                  class="h-10 w-auto rounded-full"
+                />
+              </a>
+            )
+            : <a href="/login">Login</a>}
         </div>
       </nav>
     </div>
