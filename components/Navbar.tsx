@@ -1,4 +1,8 @@
-export default function Navbar() {
+interface NavbarProps {
+  sessionId?: string;
+}
+
+export default function Navbar(props: NavbarProps) {
   return (
     <div>
       <nav class="flex items-center px-8 py-4 bg-zinc-800 text-white">
@@ -17,7 +21,10 @@ export default function Navbar() {
               class="w-3/4 px-4 py-2 rounded-md border bg-zinc-700 text-white border-zinc-700 focus:border-orange-400 focus:outline-none"
             />
           </div>
-          <a href="/signin">Login</a>
+          {props.sessionId
+            ? <a href="/signout">Logout</a>
+            : <a href="/signin">Login</a>
+          }
         </div>
       </nav>
     </div>

@@ -1,5 +1,10 @@
 import type { Plugin } from "$fresh/server.ts";
-import { User, createOrUpdateUser, deleteUserBySession, getUser } from "../utils/db.ts";
+import {
+  createOrUpdateUser,
+  deleteUserBySession,
+  getUser,
+  User,
+} from "../utils/db.ts";
 import helpers from "../utils/oauth.ts";
 
 interface DiscordUser {
@@ -36,8 +41,10 @@ export default {
         );
 
         const discordUser: DiscordUser = await discordResponse.json();
-        
-        if (!discordUser.verified) return new Response("Email not verified", { status: 400 });
+
+        if (!discordUser.verified) {
+          return new Response("Email not verified", { status: 400 });
+        }
 
         const user = await getUser(discordUser.id);
 
@@ -51,7 +58,7 @@ export default {
             username: discordUser.username,
             avatar: discordUser.avatar,
             email: discordUser.email,
-          }
+          };
 
           await createOrUpdateUser(newUser);
         }

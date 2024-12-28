@@ -19,23 +19,25 @@ export async function createOrUpdateUser(user: User) {
   const response = await kv.atomic()
     .set(userKeys, user)
     .set(userBySessionKeys, user)
-		.commit();
-	
-	if (!response.ok) throw new Error("Failed to create or update user");
+    .commit();
+
+  if (!response.ok) throw new Error("Failed to create or update user");
 }
 
 export async function deleteUserBySession(sessionId: string) {
-	await kv.delete(["users_by_session", sessionId]);
+  await kv.delete(["users_by_session", sessionId]);
 }
 
-export async function getUserBySession(sessionId: string): Promise<User | null> {
-	const userBySessionKey = ["users_by_session", sessionId];
-	const resp = await kv.get<User>(userBySessionKey);
-	return resp.value;
+export async function getUserBySession(
+  sessionId: string,
+): Promise<User | null> {
+  const userBySessionKey = ["users_by_session", sessionId];
+  const resp = await kv.get<User>(userBySessionKey);
+  return resp.value;
 }
 
 export async function getUser(id: string): Promise<User | null> {
-	const userKey = ["users", id];
-	const resp = await kv.get<User>(userKey);
-	return resp.value;
+  const userKey = ["users", id];
+  const resp = await kv.get<User>(userKey);
+  return resp.value;
 }
