@@ -30,7 +30,18 @@
     "tailwindcss": "npm:tailwindcss@3.4.1",
     "tailwindcss/": "npm:/tailwindcss@3.4.1/",
     "tailwindcss/plugin": "npm:/tailwindcss@3.4.1/plugin.js",
-    "$std/": "https://deno.land/std@0.216.0/"
+    "$std/": "https://deno.land/std@0.216.0/",
+
+    "@heroicons/react/24/outline": "https://esm.sh/@heroicons/react@2.1.5/24/outline?alias=react:preact/compat,react-dom:preact/compat&external=react,react-dom",
+    "@headlessui/react": "https://esm.sh/@headlessui/react@2.1.10?alias=react:preact/compat,react-dom:preact/compat&external=react,react-dom",
+    "@floating-ui/react": "https://esm.sh/@floating-ui/react@latest?alias=react:preact/compat,react-dom:preact/compat&external=react,react-dom",
+    "@tanstack/react-virtual": "https://esm.sh/@tanstack/react-virtual@latest?alias=react:preact/compat,react-dom:preact/compat&external=react,react-dom",
+    "@react-aria/interactions": "https://esm.sh/@react-aria/interactions@latest?alias=react:preact/compat,react-dom:preact/compat&external=react,react-dom",
+    "@react-aria/focus": "https://esm.sh/@react-aria/focus@latest?alias=react:preact/compat,react-dom:preact/compat&external=react,react-dom",
+
+    "preact/hooks": "https://esm.sh/preact@10.24.3/hooks",
+    "react": "https://esm.sh/preact@10.24.3/compat",
+    "react-dom": "https://esm.sh/preact@10.24.3/compat"
   },
   "compilerOptions": {
     "jsx": "react-jsx",
