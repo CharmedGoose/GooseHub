@@ -1,11 +1,11 @@
 export default function Home() {
   return (
-    <div>
+    <main>
       <div class="px-4 py-8 mx-auto">
-        <div class="max-w-screen-md mx-auto flex flex-col items-center justify-center text-white text-3xl">
+        <h1 class="max-w-screen-md mx-auto flex flex-col items-center justify-center text-white text-3xl">
           WIP
-        </div>
+        </h1>
       </div>
-    </div>
+    </main>
   );
 }

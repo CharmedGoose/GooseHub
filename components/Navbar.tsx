@@ -2,14 +2,15 @@ import { User } from "../utils/db.ts";
 
 interface NavbarProps {
   user?: User;
+  url: URL;
 }
 
 export default function Navbar(props: NavbarProps) {
   return (
-    <div class="navbar bg-zinc-800 text-white">
+    <div class="navbar bg-zinc-800 text-white h-[70px]">
       <div class="max-w-7xl mx-auto px-4 w-full flex justify-between">
         <div class="navbar-start w-64">
-          <a href="/" role="button" class="btn btn-ghost px-0">
+          <a href="/" class="px-0">
             <img
               src="/icon.png"
               alt="GooseHub Logo"
@@ -29,35 +30,37 @@ export default function Navbar(props: NavbarProps) {
         </div>
 
         <div class="navbar-end w-64 flex justify-end">
-          <a role="button" class="btn btn-ghost m-1">
-            Upload
-          </a>
           {props.user
             ? (
-              <div class="dropdown dropdown-end">
-                <div
-                  tabIndex={0}
-                  role="button"
-                  class="btn btn-ghost btn-circle m-1"
-                >
-                  <div className="avatar">
-                    <div className="w-[38px] rounded-full">
-                      <img
-                        src={`https://cdn.discordapp.com/avatars/${props.user.id}/${props.user.avatar}.png`}
-                        alt="Avatar"
-                      />
+              <>
+                <a role="button" href="/upload" class="btn btn-ghost m-1">
+                  Upload
+                </a>
+                <div class="dropdown dropdown-end">
+                  <div
+                    tabIndex={0}
+                    role="button"
+                    class="btn btn-ghost btn-circle m-1"
+                  >
+                    <div className="avatar">
+                      <div className="w-[38px] rounded-full">
+                        <img
+                          src={`https://cdn.discordapp.com/avatars/${props.user.id}/${props.user.avatar}.png`}
+                          alt="Avatar"
+                        />
+                      </div>
                     </div>
                   </div>
+                  <ul
+                    tabIndex={0}
+                    class="dropdown-content menu bg-zinc-900 rounded-box z-[1] w-40 p-2 shadow"
+                  >
+                    <li>
+                      <a href={`/signout?success_url=/`}>Sign Out</a>
+                    </li>
+                  </ul>
                 </div>
-                <ul
-                  tabIndex={0}
-                  class="dropdown-content menu bg-zinc-900 rounded-box z-[1] w-40 p-2 shadow"
-                >
-                  <li>
-                    <a href="/signout">Sign Out</a>
-                  </li>
-                </ul>
-              </div>
+              </>
             )
             : (
               <a href="/signin" role="button" class="btn btn-ghost m-1">
