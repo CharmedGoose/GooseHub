@@ -1,9 +1,3 @@
-import {
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-} from "@headlessui/react";
 import { User } from "../utils/db.ts";
 
 interface NavbarProps {
@@ -12,80 +6,66 @@ interface NavbarProps {
 
 export default function Navbar(props: NavbarProps) {
   return (
-    <div>
-      <nav class="flex items-center px-8 py-4 bg-zinc-800 text-white">
-        <div class="flex items-center justify-between mx-auto w-full max-w-screen-xl">
-          <a href="/">
+    <div class="navbar bg-zinc-800 text-white">
+      <div class="max-w-7xl mx-auto px-4 w-full flex justify-between">
+        <div class="navbar-start w-64">
+          <a href="/" role="button" class="btn btn-ghost px-0">
             <img
               src="/icon.png"
               alt="GooseHub Logo"
               class="h-8 w-auto"
             />
           </a>
-          <div class="flex-grow mx-4 max-w-xs">
+        </div>
+
+        <div class="navbar-center flex-1 max-w-[17rem] px-4">
+          <div className="form-control w-full">
             <input
               type="text"
               placeholder="Search GooseHub"
-              class="w-3/4 px-4 py-2 rounded-md border bg-zinc-700 text-white border-zinc-700 focus:border-orange-400 focus:outline-none"
+              class="w-full px-4 py-2 rounded-md border bg-zinc-700 text-white border-zinc-700 focus:border-orange-400 focus:outline-none"
             />
           </div>
+        </div>
+
+        <div class="navbar-end w-64 flex justify-end">
+          <a role="button" class="btn btn-ghost m-1">
+            Upload
+          </a>
           {props.user
             ? (
-              <Menu as="div" className="relative inline-block text-left">
-                <div>
-                  <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                    <img
-                      src={`https://cdn.discordapp.com/avatars/${props.user.id}/${props.user.avatar}.png`}
-                      class="h-10 w-auto rounded-full"
-                    />
-                  </MenuButton>
-                </div>
-                <MenuItems
-                  transition
-                  className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+              <div class="dropdown dropdown-end">
+                <div
+                  tabIndex={0}
+                  role="button"
+                  class="btn btn-ghost btn-circle m-1"
                 >
-                  <div className="py-1">
-                    <MenuItem>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
-                      >
-                        Account settings
-                      </a>
-                    </MenuItem>
-                    <MenuItem>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
-                      >
-                        Support
-                      </a>
-                    </MenuItem>
-                    <MenuItem>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
-                      >
-                        License
-                      </a>
-                    </MenuItem>
-                    <form action="#" method="POST">
-                      <MenuItem>
-                        <button
-                          type="submit"
-                          className="block w-full px-4 py-2 text-left text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
-                        >
-                          Sign out
-                        </button>
-                      </MenuItem>
-                    </form>
+                  <div className="avatar">
+                    <div className="w-[38px] rounded-full">
+                      <img
+                        src={`https://cdn.discordapp.com/avatars/${props.user.id}/${props.user.avatar}.png`}
+                        alt="Avatar"
+                      />
+                    </div>
                   </div>
-                </MenuItems>
-              </Menu>
+                </div>
+                <ul
+                  tabIndex={0}
+                  class="dropdown-content menu bg-zinc-900 rounded-box z-[1] w-40 p-2 shadow"
+                >
+                  <li>
+                    <a href="/signout">Sign Out</a>
+                  </li>
+                </ul>
+              </div>
             )
-            : <a href="/login">Login</a>}
+            : (
+              <a href="/signin" role="button" class="btn btn-ghost m-1">
+                Sign In
+              </a>
+            )}
         </div>
-      </nav>
+      </div>
     </div>
   );
 }

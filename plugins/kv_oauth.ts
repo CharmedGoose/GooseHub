@@ -19,7 +19,7 @@ export default {
   name: "kv-oauth",
   routes: [
     {
-      path: "/login",
+      path: "/signin",
       async handler(req) {
         return await helpers.signIn(req);
       },
