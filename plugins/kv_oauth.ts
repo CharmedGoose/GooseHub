@@ -4,8 +4,8 @@ import {
   deleteUserBySession,
   getUser,
   User,
-} from "../utils/db.ts";
-import helpers from "../utils/oauth.ts";
+} from "@utils/db.ts";
+import helpers from "@utils/oauth.ts";
 
 interface DiscordUser {
   id: string;

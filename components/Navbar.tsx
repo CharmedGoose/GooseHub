@@ -1,8 +1,7 @@
-import { User } from "../utils/db.ts";
+import { User } from "@utils/db.ts";
 
 interface NavbarProps {
   user?: User;
-  url: URL;
 }
 
 export default function Navbar(props: NavbarProps) {

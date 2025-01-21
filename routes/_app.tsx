@@ -1,6 +1,6 @@
 import { type PageProps } from "$fresh/server.ts";
-import Navbar from "../components/Navbar.tsx";
-import { User } from "../utils/db.ts";
+import Navbar from "@components/Navbar.tsx";
+import { User } from "@utils/db.ts";
 export default function App({ Component, state }: PageProps) {
   return (
     <html class="bg-black">

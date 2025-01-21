@@ -1,6 +1,6 @@
 import { FreshContext } from "$fresh/server.ts";
-import { getUserBySession, User } from "../utils/db.ts";
-import handlers from "../utils/oauth.ts";
+import { getUserBySession, User } from "@utils/db.ts";
+import handlers from "@utils/oauth.ts";
 
 interface State {
   sessionId?: string;
