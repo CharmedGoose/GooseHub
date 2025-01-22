@@ -2,6 +2,7 @@ import { User } from "@utils/db.ts";
 
 interface NavbarProps {
   user?: User;
+  url: string;
 }
 
 export default function Navbar(props: NavbarProps) {
@@ -62,7 +63,7 @@ export default function Navbar(props: NavbarProps) {
               </>
             )
             : (
-              <a href="/signin" role="button" class="btn btn-ghost m-1">
+              <a href={`/signin?success_url=${props.url}`} role="button" class="btn btn-ghost m-1">
                 Sign In
               </a>
             )}

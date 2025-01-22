@@ -49,7 +49,7 @@ export default {
         const user = await getUser(discordUser.id);
 
         if (user) {
-          await deleteUserBySession(sessionId);
+          await deleteUserBySession(user.sessionId);
           await createOrUpdateUser({ ...user, sessionId });
         } else {
           const newUser: User = {

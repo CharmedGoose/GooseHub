@@ -7,7 +7,8 @@
     "start": "deno run --unstable-kv -A --watch=static/,routes/ dev.ts",
     "build": "deno run --unstable-kv -A dev.ts build",
     "preview": "deno run --unstable-kv -A main.ts",
-    "update": "deno run -A -r https://fresh.deno.dev/update ."
+    "update": "deno run -A -r https://fresh.deno.dev/update .",
+    "clear": "deno run --unstable-kv -A ./tasks/clear_db.ts"
   },
   "lint": {
     "rules": {
@@ -26,6 +27,7 @@
 
     "$fresh/": "https://deno.land/x/fresh@1.7.3/",
     "@deno/kv-oauth": "jsr:@deno/kv-oauth@^0.11.0",
+    "fluent-ffmpeg": "npm:fluent-ffmpeg@^2.1.3",
     "minio": "npm:minio@^8.0.3",
     "preact": "https://esm.sh/preact@10.22.0",
     "preact/": "https://esm.sh/preact@10.22.0/",

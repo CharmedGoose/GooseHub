@@ -1,7 +1,8 @@
-import { type PageProps } from "$fresh/server.ts";
 import Navbar from "@components/Navbar.tsx";
 import { User } from "@utils/db.ts";
-export default function App({ Component, state }: PageProps) {
+import { defineApp } from "$fresh/server.ts";
+
+export default defineApp<{ user: User }>((_req, ctx) => {
   return (
     <html class="bg-black">
       <head>
@@ -11,9 +12,9 @@ export default function App({ Component, state }: PageProps) {
         <link rel="stylesheet" href="/styles.css" />
       </head>
       <body>
-        <Navbar user={state.user as User | undefined} />
-        <Component />
+        <Navbar user={ctx.state.user as User | undefined} url={ctx.route} />
+        <ctx.Component />
       </body>
     </html>
   );
-}
+})

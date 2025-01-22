@@ -1,26 +1,27 @@
 # GooseHub (WIP)
 
-A hub with geese.
+A hub with gooses.
 
 ## Running Locally
 
-Clone this repository:  
-`git clone https://github.com/CharmedGoose/GooseHub.git`
+1. Clone this repo:
 
-Then run:  
-`deno install`
+    ```bash
+    git clone https://github.com/CharmedGoose/GooseHub.git
+    cd ./GooseGub
+    ```
 
-Fill in .env  
+1. Fill in `.env.example`
 
-Rename .env.example to .env  
+Rename `.env.example` to `.env`
 
-Then run:  
+Then run:
 `deno task start`
 
-Then open:  
+Then open:\
 `http://localhost:8000/`
 
 ## Note
 
-I used Github Copilot for code completions.  
+I used Github Copilot for code completions.\
 Also don't look at the source i don't know what i'm doing

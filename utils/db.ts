@@ -5,18 +5,22 @@ import { Buffer } from "node:buffer";
 import internal from "node:stream";
 // @deno-types="minio/dist/esm/minio.d.mts"
 import * as Minio from "minio";
+import ffmpeg from "fluent-ffmpeg";
 
 const kv = await Deno.openKv();
 
+const endPoint = Deno.env.get("MINIO_ENDPOINT") || "localhost";
+const port = Number(Deno.env.get("MINIO_PORT"));
+const useSSL = Boolean(Deno.env.get("MINIO_USE_SSL"));
+const bucket = Deno.env.get("MINIO_BUCKET_NAME") || "my_bucket";
+
 const minio = new Minio.Client({
-  endPoint: Deno.env.get("MINIO_ENDPOINT") || "localhost",
-  port: Number(Deno.env.get("MINIO_PORT")),
-  useSSL: Boolean(Deno.env.get("MINIO_USE_SSL")),
+  endPoint: endPoint,
+  port: port,
+  useSSL: useSSL,
   accessKey: Deno.env.get("MINIO_ACCESS_KEY"),
   secretKey: Deno.env.get("MINIO_SECRET_KEY"),
 });
-
-const bucket = Deno.env.get("MINIO_BUCKET_NAME") || "my_bucket";
 
 export interface User {
   id: string;
@@ -75,7 +79,7 @@ export async function getUser(id: string): Promise<User | null> {
   return resp.value;
 }
 
-export async function uploadVideo(video: File, thumbnail: string,  user: User) {
+export async function uploadVideo(video: File, user: User) {
   if (video.type !== "video/mp4") {
     throw new Error("File type unsupported");
   }
@@ -97,7 +101,6 @@ export async function uploadVideo(video: File, thumbnail: string,  user: User) {
   const videoBuffer = Buffer.from(
     await video.arrayBuffer(),
   );
-  const thumbnailBuffer = Buffer.from(thumbnail);
 
   await minio.putObject(
     bucket,
@@ -105,12 +108,17 @@ export async function uploadVideo(video: File, thumbnail: string,  user: User) {
     videoBuffer,
     videoBuffer.byteLength,
   );
-  await minio.putObject(
+
+  ffmpeg(
+    `${useSSL ? "https" : "http"}://${endPoint}:${port}/${bucket}/${path}`,
+  );
+
+  /*await minio.putObject(
     bucket,
     thumbnailPath,
     thumbnailBuffer,
     thumbnailBuffer.byteLength,
-  );
+  );*/
 
   const videoKey = ["videos", video.name];
   const videoByUserKey = [

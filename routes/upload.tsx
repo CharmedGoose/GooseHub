@@ -1,6 +1,5 @@
 import { Handlers, type PageProps } from "$fresh/server.ts";
 import { uploadVideo, User } from "@utils/db.ts";
-import { Buffer } from "node:buffer";
 
 interface Props {
   message: string | null;
@@ -9,10 +8,6 @@ interface Props {
 
 export const handler: Handlers<Props> = {
   async GET(_req, ctx) {
-    if (!ctx.state.user) {
-      return Response.redirect("/login");
-    }
-
     return await ctx.render({
       message: null,
       uploaded: false,
@@ -21,13 +16,6 @@ export const handler: Handlers<Props> = {
   async POST(req, ctx) {
     const form = await req.formData();
     const file = form.get("video-file") as File;
-
-    if (!ctx.state.user) {
-      return ctx.render({
-        message: "You must be logged in to upload a video.",
-        uploaded: false,
-      });
-    }
 
     if (!file) {
       return ctx.render({
@@ -43,10 +31,7 @@ export const handler: Handlers<Props> = {
       });
     }
 
-    // halp
-    const thumbnail = 'temp'
-
-    uploadVideo(file, thumbnail, ctx.state.user as User);
+    uploadVideo(file, ctx.state.user as User);
 
     return ctx.render({
       message: `${file.name} uploaded.`,
