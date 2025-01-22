@@ -9,20 +9,6 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    environment: production
-
-    env:
-      DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
-      DISCORD_CLIENT_ID: ${{ secrets.DISCORD_CLIENT_ID }}
-      DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET }}
-      MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
-      MINIO_PORT: ${{ secrets.MINIO_PORT }}
-      MINIO_USE_SSL: ${{ secrets.MINIO_USE_SSL }}
-      MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
-      MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
-      MINIO_BUCKET_NAME: ${{ secrets.MINIO_BUCKET_NAME }}
-      MINIO_REGION: ${{ secrets.MINIO_REGION }}
-      
 
     permissions:
       id-token: write # Needed for auth with Deno Deploy
