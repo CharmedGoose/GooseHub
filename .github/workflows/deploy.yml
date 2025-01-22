@@ -9,17 +9,18 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    environment: production
 
     env:
-      DOMAIN_NAME: ${{ env.DOMAIN_NAME }}
-      DISCORD_CLIENT_ID: ${{ env.DISCORD_CLIENT_ID }}
-      DISCORD_CLIENT_SECRET: ${{ env.DISCORD_CLIENT_SECRET }}
-      MINIO_ENDPOINT: ${{ env.MINIO_ENDPOINT }}
-      MINIO_PORT: ${{ env.MINIO_PORT }}
-      MINIO_USE_SSL: ${{ env.MINIO_USE_SSL }}
-      MINIO_ACCESS_KEY: ${{ env.MINIO_ACCESS_KEY }}
-      MINIO_SECRET_KEY: ${{ env.MINIO_SECRET_KEY }}
-      MINIO_BUCKET: ${{ env.MINIO_BUCKET }}
+      DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
+      DISCORD_CLIENT_ID: ${{ secrets.DISCORD_CLIENT_ID }}
+      DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET }}
+      MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
+      MINIO_PORT: ${{ secrets.MINIO_PORT }}
+      MINIO_USE_SSL: ${{ secrets.MINIO_USE_SSL }}
+      MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+      MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+      MINIO_BUCKET: ${{ secrets.MINIO_BUCKET }}
       
 
     permissions:
