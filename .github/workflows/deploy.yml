@@ -21,6 +21,7 @@ jobs:
       MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
       MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
       MINIO_BUCKET_NAME: ${{ secrets.MINIO_BUCKET_NAME }}
+      MINIO_REGION: ${{ secrets.MINIO_REGION }}
       
 
     permissions:
