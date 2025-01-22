@@ -3,9 +3,8 @@
 
 import { Buffer } from "node:buffer";
 import internal from "node:stream";
-// @deno-types="minio/dist/esm/minio.d.mts"
+// @ts-types="minio/dist/esm/minio.d.mts"
 import * as Minio from "minio";
-import ffmpeg from "fluent-ffmpeg";
 
 const kv = await Deno.openKv();
 
@@ -20,6 +19,7 @@ const minio = new Minio.Client({
   useSSL: useSSL,
   accessKey: Deno.env.get("MINIO_ACCESS_KEY"),
   secretKey: Deno.env.get("MINIO_SECRET_KEY"),
+  region: Deno.env.get("MINIO_REGION"),
 });
 
 export interface User {
@@ -84,9 +84,33 @@ export async function uploadVideo(video: File, user: User) {
     throw new Error("File type unsupported");
   }
 
-  if (!await minio.bucketExists(bucket)) {
+  if (!(await minio.bucketExists(bucket))) {
     await minio.makeBucket(
       bucket,
+      Deno.env.get("MINIO_REGION"),
+    );
+
+    await minio.setBucketPolicy(
+      bucket,
+      `{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": [
+                    "*"
+                ]
+            },
+            "Action": [
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::goosehub-dev/*"
+            ]
+        }
+    ]
+}`,
     );
   }
 
@@ -109,16 +133,38 @@ export async function uploadVideo(video: File, user: User) {
     videoBuffer.byteLength,
   );
 
-  ffmpeg(
-    `${useSSL ? "https" : "http"}://${endPoint}:${port}/${bucket}/${path}`,
-  );
+  Deno.mkdir("./tmp").catch(() => {});
 
-  /*await minio.putObject(
+  const command = new Deno.Command("ffmpeg", {
+    args: [
+      "-i",
+      `${useSSL ? "https" : "http"}://${endPoint}:${port}/${bucket}/${path}`,
+      "-ss",
+      "00:00:01.000",
+      "-vf",
+      "scale=1280:720:force_original_aspect_ratio=decrease",
+      "-vframes",
+      "1",
+      `./tmp/${id}.jpg`,
+    ],
+    stdout: "null",
+    stdin: "null",
+    stderr: "null"
+  });
+
+  const process = command.spawn();
+
+  const status = await process.status;
+
+  if (status.code) throw new Error("Failed to generate thumbnail");
+
+  await minio.fPutObject(
     bucket,
     thumbnailPath,
-    thumbnailBuffer,
-    thumbnailBuffer.byteLength,
-  );*/
+    `./tmp/${id}.jpg`,
+  );
+
+  Deno.remove(`./tmp/${id}.jpg`);
 
   const videoKey = ["videos", video.name];
   const videoByUserKey = [
