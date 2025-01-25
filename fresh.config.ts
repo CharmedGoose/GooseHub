@@ -5,4 +5,7 @@ import session from "./plugins/session.ts";
 
 export default defineConfig({
   plugins: [tailwind(), kv_oauth, session],
+  server: {
+    port: Number(Deno.env.get("PORT")) || 8000,
+  }
 });
