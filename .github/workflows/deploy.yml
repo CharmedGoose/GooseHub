@@ -47,8 +47,8 @@ jobs:
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
       - name: Copy files
-        run: rsync -anvz ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}
+        run: rsync -avz ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}
         
       - name: Restart server
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && systemctl --user restart ${{ secrets.SERVICE_NAME }}.service"
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "systemctl --user restart ${{ secrets.SERVICE_NAME }}.service && exit"
           
