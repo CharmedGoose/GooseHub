@@ -84,7 +84,9 @@ export async function uploadVideo(video: File, user: User) {
     throw new Error("File type unsupported");
   }
 
-  if (!(await minio.bucketExists(bucket))) {
+  const bucktExists  = await minio.bucketExists(bucket);
+
+  if (!bucktExists) {
     await minio.makeBucket(
       bucket,
       Deno.env.get("MINIO_REGION"),
