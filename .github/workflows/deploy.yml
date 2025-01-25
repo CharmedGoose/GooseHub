@@ -6,7 +6,6 @@ on:
     branches: main
   workflow_dispatch:
 
-
 jobs:
   deploy:
     name: Deploy
@@ -25,9 +24,9 @@ jobs:
       MINIO_BUCKET_NAME: ${{ secrets.MINIO_BUCKET_NAME }}
       MINIO_REGION: ${{ secrets.MINIO_REGION }}
 
+      
     permissions:
-      id-token: write # Needed for auth with Deno Deploy
-      contents: read # Needed to clone the repository
+      contents: read
 
     steps:
       - name: Clone repository
@@ -41,11 +40,15 @@ jobs:
       - name: Build step
         run: "deno task build"
 
-      - name: Upload to Deno Deploy
-        uses: denoland/deployctl@v1
-        with:
-          project: "goosehub"
-          entrypoint: "main.ts"
-          root: "."
-          
+      - name: Install SSH keys
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+
+      - name: Copy files
+        run: rsync -anvz ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}
+        
+      - name: Restart server
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && systemctl --user restart ${{ secrets.SERVICE_NAME }}.service"
           
