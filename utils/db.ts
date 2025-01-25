@@ -108,7 +108,7 @@ export async function uploadVideo(video: File, user: User) {
                 "s3:GetObject"
             ],
             "Resource": [
-                "arn:aws:s3:::goosehub-dev/*"
+                "arn:aws:s3:::${bucket}/*"
             ]
         }
     ]
