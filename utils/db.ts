@@ -84,37 +84,15 @@ export async function uploadVideo(video: File, user: User) {
     throw new Error("File type unsupported");
   }
 
-  const bucktExists  = await minio.bucketExists(bucket);
-
-  if (!bucktExists) {
-    await minio.makeBucket(
-      bucket,
-      Deno.env.get("MINIO_REGION"),
-    );
-
-    await minio.setBucketPolicy(
-      bucket,
-      `{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": [
-                    "*"
-                ]
-            },
-            "Action": [
-                "s3:GetObject"
-            ],
-            "Resource": [
-                "arn:aws:s3:::${bucket}/*"
-            ]
-        }
-    ]
-}`,
-    );
+  if (!(await minio.bucketExists(bucket))) {
+    await createBucket();
   }
+
+  await Deno.mkdir("./tmp").catch((err) => {
+    if (!(err instanceof Deno.errors.AlreadyExists)) {
+      throw err;
+    }
+  });
 
   const name = video.name.replace(/\.[^/.]+$/, "");
   const videoType = video.name.split(".").pop();
@@ -124,20 +102,28 @@ export async function uploadVideo(video: File, user: User) {
   const path = `videos/${name}-${id}.${videoType}`;
   const thumbnailPath = `thumbnails/${name}-${id}.png`;
 
-  const videoBuffer = Buffer.from(
-    await video.arrayBuffer(),
-  );
+  await Deno.writeFile(`./tmp/${id}.mp4`, new Uint8Array(await video.arrayBuffer()));
 
-  await minio.putObject(
-    bucket,
-    path,
-    videoBuffer,
-    videoBuffer.byteLength,
-  );
+  const videoProcess = new Deno.Command("ffmpeg", {
+    args: [
+      "-i",
+      `./tmp/${id}.mp4`,
+      "-c:v",
+      "libsvtav1",
+      "-preset",
+      "10",
+      "-crf",
+      "35",
+      "-c:a",
+      "copy",
+      `./tmp/${id}.mp4`,
+    ]
+  }).spawn();
 
-  Deno.mkdir("./tmp").catch(() => {});
+  const videoStatus = await videoProcess.status;
+  if (videoStatus.code) throw new Error("Failed to convert video to AV1");
 
-  const command = new Deno.Command("ffmpeg", {
+  const thumbnailProcess = new Deno.Command("ffmpeg", {
     args: [
       "-i",
       `${useSSL ? "https" : "http"}://${endPoint}:${port}/${bucket}/${path}`,
@@ -145,20 +131,25 @@ export async function uploadVideo(video: File, user: User) {
       "00:00:01.000",
       "-vf",
       "scale=1280:720:force_original_aspect_ratio=decrease",
+      "-qscale:v",
+      "4",
       "-vframes",
       "1",
       `./tmp/${id}.jpg`,
     ],
     stdout: "null",
     stdin: "null",
-    stderr: "null"
-  });
+    stderr: "null",
+  }).spawn();
 
-  const process = command.spawn();
+  const thumbnailStatus = await thumbnailProcess.status;
+  if (thumbnailStatus.code) throw new Error("Failed to generate thumbnail");
 
-  const status = await process.status;
-
-  if (status.code) throw new Error("Failed to generate thumbnail");
+  await minio.fPutObject(
+    bucket,
+    path,
+    `./tmp/${id}.mp4`,
+  );
 
   await minio.fPutObject(
     bucket,
@@ -166,6 +157,7 @@ export async function uploadVideo(video: File, user: User) {
     `./tmp/${id}.jpg`,
   );
 
+  Deno.remove(`./tmp/${id}.mp4`);
   Deno.remove(`./tmp/${id}.jpg`);
 
   const videoKey = ["videos", video.name];
@@ -223,4 +215,34 @@ export async function getVideoFile(
   path: string,
 ): Promise<internal.Readable | null> {
   return await minio.getObject(bucket, path);
+}
+
+async function createBucket() {
+  await minio.makeBucket(
+    bucket,
+    Deno.env.get("MINIO_REGION"),
+  );
+
+  await minio.setBucketPolicy(
+    bucket,
+    `{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": [
+                    "*"
+                ]
+            },
+            "Action": [
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::${bucket}/*"
+            ]
+        }
+    ]
+}`,
+  );
 }
