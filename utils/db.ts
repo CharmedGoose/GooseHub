@@ -4,7 +4,9 @@
 // @ts-types="minio/dist/esm/minio.d.mts"
 import * as Minio from "minio";
 import { Buffer } from "node:buffer";
-import * as Snowflake from "snowflake";
+import ShortUniqueId from "short-unique-id";
+
+const { randomUUID } = new ShortUniqueId({ length: 10 });
 
 const kv = await Deno.openKv();
 
@@ -97,10 +99,10 @@ export async function uploadVideo(video: File, user: User) {
 
   const name = video.name.replace(/\.[^/.]+$/, "");
   const videoType = video.name.split(".").pop();
-  const id = Snowflake.generate();
+  const id = randomUUID();
 
-  const path = `videos/${name}-${id}.${videoType}`;
-  const thumbnailPath = `thumbnails/${name}-${id}.png`;
+  const path = `videos/${id}.${videoType}`;
+  const thumbnailPath = `thumbnails/${id}.png`;
 
   const videoBuffer = Buffer.from(
     await video.arrayBuffer(),
@@ -147,6 +149,7 @@ export async function uploadVideo(video: File, user: User) {
   Deno.remove(`./tmp/${id}.jpg`);
 
   const videoKey = ["videos", id];
+  const videoByNameKey = ["videos_by_name", video.name];
   const videoByUserKey = [
     "videos_by_user",
     user.id,
@@ -167,6 +170,9 @@ export async function uploadVideo(video: File, user: User) {
 
   const response = await kv.atomic().set(
     videoKey,
+    videoInfo,
+  ).set(
+    videoByNameKey,
     videoInfo,
   ).set(
     videoByUserKey,

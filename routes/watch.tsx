@@ -3,7 +3,13 @@ import { Head } from "$fresh/runtime.ts";
 import { getVideoById, pathToDB } from "@utils/db.ts";
 
 export default defineRoute(async (_req, ctx) => {
-  const { id } = ctx.params;
+  const id = ctx.url.searchParams.get("v");
+  if (!id) {
+    return new Response("", {
+      status: 301,
+      headers: { Location: "/" },
+    });
+  }
   const video = await getVideoById(id);
   if (!video) {
     return ctx.renderNotFound();
@@ -17,7 +23,7 @@ export default defineRoute(async (_req, ctx) => {
           rel="stylesheet"
         />
       </Head>
-        <video
+      <video
         id="video"
         class="video-js vjs-fill"
         controls

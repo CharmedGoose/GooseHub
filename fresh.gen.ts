@@ -9,7 +9,7 @@ import * as $about from "./routes/about.tsx";
 import * as $api_joke from "./routes/api/joke.ts";
 import * as $index from "./routes/index.tsx";
 import * as $upload from "./routes/upload.tsx";
-import * as $video_id_ from "./routes/video/[id].tsx";
+import * as $watch from "./routes/watch.tsx";
 
 import type { Manifest } from "$fresh/server.ts";
 
@@ -22,7 +22,7 @@ const manifest = {
     "./routes/api/joke.ts": $api_joke,
     "./routes/index.tsx": $index,
     "./routes/upload.tsx": $upload,
-    "./routes/video/[id].tsx": $video_id_,
+    "./routes/watch.tsx": $watch,
   },
   islands: {},
   baseUrl: import.meta.url,
