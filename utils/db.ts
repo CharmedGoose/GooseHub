@@ -99,7 +99,7 @@ export async function uploadVideo(video: File, user: User) {
 
   const name = video.name.replace(/\.[^/.]+$/, "");
   const videoType = video.name.split(".").pop();
-  const id = randomUUID();
+  const id = await createUniqueId();
 
   const path = `videos/${id}.${videoType}`;
   const thumbnailPath = `thumbnails/${id}.png`;
@@ -209,6 +209,16 @@ export async function getVideoById(id: string): Promise<Video | null> {
   return resp.value;
 }
 
+export async function incrementVideoViews(id: string) {
+  const videoKey = ["videos", id];
+  const resp = await kv.get<Video>(videoKey);
+
+  if (!resp.value) return;
+
+  resp.value.views++;
+  await kv.set(videoKey, resp.value);
+}
+
 async function createBucket() {
   await minio.makeBucket(
     bucket,
@@ -237,4 +247,12 @@ async function createBucket() {
     ]
 }`,
   );
+}
+
+async function createUniqueId() {
+  const id = randomUUID();
+  if (await getVideoById(id)) {
+    return createUniqueId();
+  }
+  return id;
 }

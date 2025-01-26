@@ -54,27 +54,14 @@ export default function Upload(props: PageProps<Props>) {
   const { message, uploaded } = props.data;
 
   return (
-    <main>
+    <main class="flex flex-row h-[calc(100vh-70px)] justify-center items-center">
       {uploaded
-        ? (
-          <div class="flex flex-row h-[calc(100vh-70px)] justify-center items-center text-white">
-            <h1 class="text-3xl">Upload Successful</h1>
-          </div>
-        )
+        ? <h1 class="text-3xl text-white">Upload Successful</h1>
         : (
-          // I used github copilot to help write this part cause i'm dumb and don't know how to do it
-          <div class="flex flex-row h-[calc(100vh-70px)] justify-center items-center text-white">
-            <div class="max-w-md w-full p-8 bg-zinc-900 rounded-lg">
-              <h1 class="text-2xl font-bold text-center mb-6">
-                Upload Video
-              </h1>
-              {message
-                ? (
-                  <h2 class="text-lg text-center mb-6 text-red-700">
-                    {message}
-                  </h2>
-                )
-                : null}
+          <div class="card bg-zinc-900 w-96">
+            <div class="card-body items-center text-center">
+              <h2 class="card-title mb-3">Upload Video</h2>
+              {message ? <p class="text-red-600 mb-3">{message}</p> : null}
               <form
                 method="post"
                 encType="multipart/form-data"
@@ -84,9 +71,11 @@ export default function Upload(props: PageProps<Props>) {
                   type="file"
                   name="video-file"
                   accept=".mp4"
-                  class="file-input w-full bg-zinc-700 text-white border-zinc-600 hover:border-orange-400"
+                  class="file-input file-input-bordered w-full max-w-xs bg-zinc-700 text-white hover:border-orange-400"
                 />
-                <button type="submit" class="btn w-full">Upload</button>
+                <div class="card-actions justify-end">
+                  <button class="btn w-full">Upload!</button>
+                </div>
               </form>
             </div>
           </div>

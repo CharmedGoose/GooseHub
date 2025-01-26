@@ -1,6 +1,6 @@
 import { defineRoute } from "$fresh/server.ts";
 import { Head } from "$fresh/runtime.ts";
-import { getVideoById, pathToDB } from "@utils/db.ts";
+import { getVideoById, incrementVideoViews, pathToDB } from "@utils/db.ts";
 
 export default defineRoute(async (_req, ctx) => {
   const id = ctx.url.searchParams.get("v");
@@ -14,6 +14,9 @@ export default defineRoute(async (_req, ctx) => {
   if (!video) {
     return ctx.renderNotFound();
   }
+
+  // TODO: make views increment only once per user or like youtubes view system too lazy to do it now
+  incrementVideoViews(id);
 
   return (
     <main class="h-[calc(100vh-70px)] flex items-center justify-center">
