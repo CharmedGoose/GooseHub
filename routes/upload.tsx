@@ -31,7 +31,17 @@ export const handler: Handlers<Props> = {
       });
     }
 
-    uploadVideo(file, ctx.state.user as User);
+    try {
+      await uploadVideo(file, ctx.state.user as User);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error
+        ? error.message
+        : "An unknown error occurred";
+      return ctx.render({
+        message: errorMessage,
+        uploaded: false,
+      });
+    }
 
     return ctx.render({
       message: `${file.name} uploaded.`,
