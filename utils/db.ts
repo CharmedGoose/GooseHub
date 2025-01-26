@@ -1,10 +1,10 @@
 // Tutorial: https://youtu.be/8jRuV9P5_gA
 /// <reference lib="deno.unstable" />
 
-import { Buffer } from "node:buffer";
 import internal from "node:stream";
 // @ts-types="minio/dist/esm/minio.d.mts"
 import * as Minio from "minio";
+import { Buffer } from "node:buffer";
 
 const kv = await Deno.openKv();
 
@@ -102,26 +102,16 @@ export async function uploadVideo(video: File, user: User) {
   const path = `videos/${name}-${id}.${videoType}`;
   const thumbnailPath = `thumbnails/${name}-${id}.png`;
 
-  await Deno.writeFile(`./tmp/${id}.mp4`, new Uint8Array(await video.arrayBuffer()));
+  const videoBuffer = Buffer.from(
+    await video.arrayBuffer(),
+  );
 
-  const videoProcess = new Deno.Command("ffmpeg", {
-    args: [
-      "-i",
-      `./tmp/${id}.mp4`,
-      "-c:v",
-      "libsvtav1",
-      "-preset",
-      "10",
-      "-crf",
-      "35",
-      "-c:a",
-      "copy",
-      `./tmp/${id}.mp4`,
-    ]
-  }).spawn();
-
-  const videoStatus = await videoProcess.status;
-  if (videoStatus.code) throw new Error("Failed to convert video to AV1");
+  await minio.putObject(
+    bucket,
+    path,
+    videoBuffer,
+    videoBuffer.byteLength,
+  );
 
   const thumbnailProcess = new Deno.Command("ffmpeg", {
     args: [
@@ -142,14 +132,8 @@ export async function uploadVideo(video: File, user: User) {
     stderr: "null",
   }).spawn();
 
-  const thumbnailStatus = await thumbnailProcess.status;
-  if (thumbnailStatus.code) throw new Error("Failed to generate thumbnail");
-
-  await minio.fPutObject(
-    bucket,
-    path,
-    `./tmp/${id}.mp4`,
-  );
+  const status = await thumbnailProcess.status;
+  if (status.code) throw new Error("Failed to generate thumbnail");
 
   await minio.fPutObject(
     bucket,
@@ -157,7 +141,6 @@ export async function uploadVideo(video: File, user: User) {
     `./tmp/${id}.jpg`,
   );
 
-  Deno.remove(`./tmp/${id}.mp4`);
   Deno.remove(`./tmp/${id}.jpg`);
 
   const videoKey = ["videos", video.name];
