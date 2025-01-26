@@ -24,10 +24,9 @@
   "imports": {
     "@components/": "./components/",
     "@utils/": "./utils/",
-
     "$fresh/": "https://deno.land/x/fresh@1.7.3/",
     "@deno/kv-oauth": "jsr:@deno/kv-oauth@^0.11.0",
-    "snowflake": "https://czdaxh2wvsu5bh35v6jxu5kiiirpyvizlcdvv4b4h6r6j4ooltia.arweave.net/FkYLn1asqdCffa-TenVIQiL8VRlYh1rwPD-j5PHOXNA/snowflake.ts",
+    "snowflake": "https://raw.githubusercontent.com/ncs-pl/deno-snowflake/refs/heads/main/snowflake.ts",
     "minio": "npm:minio@^8.0.3",
     "preact": "https://esm.sh/preact@10.22.0",
     "preact/": "https://esm.sh/preact@10.22.0/",
