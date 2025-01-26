@@ -1,10 +1,10 @@
 // Tutorial: https://youtu.be/8jRuV9P5_gA
 /// <reference lib="deno.unstable" />
 
-import internal from "node:stream";
 // @ts-types="minio/dist/esm/minio.d.mts"
 import * as Minio from "minio";
 import { Buffer } from "node:buffer";
+import * as Snowflake from "snowflake";
 
 const kv = await Deno.openKv();
 
@@ -12,6 +12,7 @@ const endPoint = Deno.env.get("MINIO_ENDPOINT") || "localhost";
 const port = Number(Deno.env.get("MINIO_PORT"));
 const useSSL = Boolean(Deno.env.get("MINIO_USE_SSL"));
 const bucket = Deno.env.get("MINIO_BUCKET_NAME") || "my_bucket";
+export const pathToDB = `${useSSL ? "https" : "http"}://${endPoint}:${port}`;
 
 const minio = new Minio.Client({
   endPoint: endPoint,
@@ -96,8 +97,7 @@ export async function uploadVideo(video: File, user: User) {
 
   const name = video.name.replace(/\.[^/.]+$/, "");
   const videoType = video.name.split(".").pop();
-  const id = Date.now().toString(36) +
-    Math.random().toString(36).substring(2);
+  const id = Snowflake.generate();
 
   const path = `videos/${name}-${id}.${videoType}`;
   const thumbnailPath = `thumbnails/${name}-${id}.png`;
@@ -116,7 +116,7 @@ export async function uploadVideo(video: File, user: User) {
   const thumbnailProcess = new Deno.Command("ffmpeg", {
     args: [
       "-i",
-      `${useSSL ? "https" : "http"}://${endPoint}:${port}/${bucket}/${path}`,
+      `${pathToDB}/${bucket}/${path}`,
       "-ss",
       "00:00:01.000",
       "-vf",
@@ -139,11 +139,14 @@ export async function uploadVideo(video: File, user: User) {
     bucket,
     thumbnailPath,
     `./tmp/${id}.jpg`,
-  );
+  ).catch(async (err) => {
+    await Deno.remove(`./tmp/${id}.jpg`);
+    throw err;
+  });
 
   Deno.remove(`./tmp/${id}.jpg`);
 
-  const videoKey = ["videos", video.name];
+  const videoKey = ["videos", id];
   const videoByUserKey = [
     "videos_by_user",
     user.id,
@@ -170,34 +173,34 @@ export async function uploadVideo(video: File, user: User) {
     videoInfo,
   ).commit();
 
-  if (!response) {
+  if (!response.ok) {
     throw new Error("Failed to upload video info to database");
   }
 }
 
 export async function getAllVideos(): Promise<
-  { video: Video; thumbnail: internal.Readable }[]
+  { video: Video; thumbnail: string }[]
 > {
   const videos: Deno.KvListIterator<Video> = kv.list({ prefix: ["videos"] });
 
-  const result: { video: Video; thumbnail: internal.Readable }[] = [];
+  const result: { video: Video; thumbnail: string }[] = [];
 
   for await (const { value } of videos) {
     if (!value) continue;
 
     result.push({
       video: value,
-      thumbnail: await minio.getObject(bucket, value.thumbnail),
+      thumbnail: `${pathToDB}/${value.bucket}/${value.thumbnail}`,
     });
   }
 
   return result;
 }
 
-export async function getVideoFile(
-  path: string,
-): Promise<internal.Readable | null> {
-  return await minio.getObject(bucket, path);
+export async function getVideoById(id: string): Promise<Video | null> {
+  const videoKey = ["videos", id];
+  const resp = await kv.get<Video>(videoKey);
+  return resp.value;
 }
 
 async function createBucket() {

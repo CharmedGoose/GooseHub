@@ -27,6 +27,7 @@
 
     "$fresh/": "https://deno.land/x/fresh@1.7.3/",
     "@deno/kv-oauth": "jsr:@deno/kv-oauth@^0.11.0",
+    "snowflake": "https://denopkg.com/n1c00o/deno-snowflake@v1.0.0/snowflake.ts",
     "minio": "npm:minio@^8.0.3",
     "preact": "https://esm.sh/preact@10.22.0",
     "preact/": "https://esm.sh/preact@10.22.0/",

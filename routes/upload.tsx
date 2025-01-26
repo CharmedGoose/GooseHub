@@ -54,11 +54,11 @@ export default function Upload(props: PageProps<Props>) {
   const { message, uploaded } = props.data;
 
   return (
-    <div>
+    <main>
       {uploaded
         ? (
-          <div>
-            <h1>Upload Successful</h1>
+          <div class="flex flex-row h-[calc(100vh-70px)] justify-center items-center text-white">
+            <h1 class="text-3xl">Upload Successful</h1>
           </div>
         )
         : (
@@ -91,6 +91,6 @@ export default function Upload(props: PageProps<Props>) {
             </div>
           </div>
         )}
-    </div>
+    </main>
   );
 }

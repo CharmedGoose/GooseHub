@@ -22,7 +22,7 @@ for await (const { key } of kv.list({ prefix: [] })) {
 }
 
 console.log("KV cleared");
-console.log("Clearing MIinIO bucket");
+console.log("Clearing MinIO bucket");
 
 const objects = minio.listObjects(bucket, "", true);
 objects.forEach(async (obj) => {
