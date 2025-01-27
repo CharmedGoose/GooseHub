@@ -17,4 +17,4 @@ export default defineApp<{ user: User }>((_req, ctx) => {
       </body>
     </html>
   );
-})
+});

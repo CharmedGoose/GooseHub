@@ -38,5 +38,9 @@ export default {
       path: "/upload",
       middleware: { handler: ensureSignedIn },
     },
+    {
+      path: "/edit",
+      middleware: { handler: ensureSignedIn },
+    }
   ],
 } as Plugin<State>;

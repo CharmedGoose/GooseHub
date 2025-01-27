@@ -23,6 +23,7 @@
   ],
   "imports": {
     "@components/": "./components/",
+    "@islands/": "./islands/",
     "@utils/": "./utils/",
     
     "$fresh/": "https://deno.land/x/fresh@1.7.3/",

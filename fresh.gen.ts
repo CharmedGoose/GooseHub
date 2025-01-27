@@ -7,10 +7,12 @@ import * as $_app from "./routes/_app.tsx";
 import * as $_middleware from "./routes/_middleware.tsx";
 import * as $about from "./routes/about.tsx";
 import * as $api_joke from "./routes/api/joke.ts";
+import * as $edit from "./routes/edit.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $upload from "./routes/upload.tsx";
 import * as $watch from "./routes/watch.tsx";
-
+import * as $EditVideo from "./islands/EditVideo.tsx";
+import * as $UploadVideo from "./islands/UploadVideo.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -20,11 +22,15 @@ const manifest = {
     "./routes/_middleware.tsx": $_middleware,
     "./routes/about.tsx": $about,
     "./routes/api/joke.ts": $api_joke,
+    "./routes/edit.tsx": $edit,
     "./routes/index.tsx": $index,
     "./routes/upload.tsx": $upload,
     "./routes/watch.tsx": $watch,
   },
-  islands: {},
+  islands: {
+    "./islands/EditVideo.tsx": $EditVideo,
+    "./islands/UploadVideo.tsx": $UploadVideo,
+  },
   baseUrl: import.meta.url,
 } satisfies Manifest;
 

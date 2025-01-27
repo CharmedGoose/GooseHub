@@ -5,6 +5,7 @@
 import * as Minio from "minio";
 import { Buffer } from "node:buffer";
 import ShortUniqueId from "short-unique-id";
+import { generateThumbnailFromVideo } from "@utils/ffmpeg.ts";
 
 const { randomUUID } = new ShortUniqueId({ length: 10 });
 
@@ -82,7 +83,7 @@ export async function getUser(id: string): Promise<User | null> {
   return resp.value;
 }
 
-export async function uploadVideo(video: File, user: User) {
+export async function uploadVideo(video: File, user: User): Promise<string> {
   if (video.type !== "video/mp4") {
     throw new Error("File type unsupported");
   }
@@ -115,27 +116,7 @@ export async function uploadVideo(video: File, user: User) {
     videoBuffer.byteLength,
   );
 
-  const thumbnailProcess = new Deno.Command("ffmpeg", {
-    args: [
-      "-i",
-      `${pathToDB}/${bucket}/${path}`,
-      "-ss",
-      "00:00:01.000",
-      "-vf",
-      "scale=1280:720:force_original_aspect_ratio=decrease",
-      "-qscale:v",
-      "4",
-      "-vframes",
-      "1",
-      `./tmp/${id}.jpg`,
-    ],
-    stdout: "null",
-    stdin: "null",
-    stderr: "null",
-  }).spawn();
-
-  const status = await thumbnailProcess.status;
-  if (status.code) throw new Error("Failed to generate thumbnail");
+  await generateThumbnailFromVideo(`${pathToDB}/${bucket}/${path}`, id);
 
   await minio.fPutObject(
     bucket,
@@ -182,6 +163,8 @@ export async function uploadVideo(video: File, user: User) {
   if (!response.ok) {
     throw new Error("Failed to upload video info to database");
   }
+
+  return id;
 }
 
 export async function getAllVideos(): Promise<

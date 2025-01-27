@@ -19,7 +19,7 @@ export default defineRoute(async (_req, ctx) => {
   incrementVideoViews(id);
 
   return (
-    <main class="h-[calc(100vh-70px)] flex items-center justify-center">
+    <main class="h-[calc(100vh-90px)] flex items-center justify-center">
       <Head>
         <link
           href="https://vjs.zencdn.net/8.16.1/video-js.css"
