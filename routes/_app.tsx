@@ -1,6 +1,6 @@
+import { defineApp } from "$fresh/server.ts";
 import Navbar from "@components/Navbar.tsx";
 import { User } from "@utils/db.ts";
-import { defineApp } from "$fresh/server.ts";
 
 export default defineApp<{ user: User }>((_req, ctx) => {
   return (
