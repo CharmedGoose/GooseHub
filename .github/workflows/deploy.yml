@@ -17,6 +17,8 @@ jobs:
       PORT: ${{ secrets.PORT }}
       DISCORD_CLIENT_ID: ${{ secrets.DISCORD_CLIENT_ID }}
       DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET }}
+      DENO_KV_PATH: ${{ secrets.DENO_KV_PATH }}
+      DENO_KV_ACCESS_TOKEN: ${{ secrets.DENO_KV_ACCESS_TOKEN }}
       S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
       S3_PORT: ${{ secrets.S3_PORT }}
       S3_USE_SSL: ${{ secrets.S3_USE_SSL }}
@@ -24,7 +26,6 @@ jobs:
       S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
       S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
       S3_REGION: ${{ secrets.S3_REGION }}
-
       
     permissions:
       contents: read
