@@ -5,7 +5,7 @@
 import * as Minio from "minio";
 import { Buffer } from "node:buffer";
 import ShortUniqueId from "short-unique-id";
-import { generateThumbnailFromVideo } from "@utils/ffmpeg.ts";
+import { generateThumbnailFromVideo, getVideoDuration } from "@utils/ffmpeg.ts";
 
 const { randomUUID } = new ShortUniqueId({ length: 10 });
 
@@ -42,6 +42,7 @@ export interface Video {
   bucket: string;
   user: string;
   description?: string;
+  duration: number;
   views: number;
   likes: number;
   dislikes: number;
@@ -117,6 +118,7 @@ export async function uploadVideo(video: File, user: User): Promise<string> {
   );
 
   await generateThumbnailFromVideo(`${pathToDB}/${bucket}/${path}`, id);
+  const duration = await getVideoDuration(video);
 
   await minio.fPutObject(
     bucket,
@@ -143,6 +145,7 @@ export async function uploadVideo(video: File, user: User): Promise<string> {
     bucket,
     thumbnail: thumbnailPath,
     user: user.id,
+    duration: duration,
     views: 0,
     likes: 0,
     dislikes: 0,

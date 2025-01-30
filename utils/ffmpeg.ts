@@ -26,3 +26,32 @@ export async function generateThumbnailFromVideo(
 
   return `./tmp/${id}.jpg`;
 }
+
+export async function getVideoDuration(video: File): Promise<number> {
+  const UUID = crypto.randomUUID();
+
+  const videoPath = `./tmp/${UUID}.mp4`;
+  await Deno.writeFile(videoPath, video.stream());
+  
+  const process = new Deno.Command("ffprobe", {
+    args: [
+      "-v",
+      "quiet",
+      "-print_format",
+      "json",
+      "-show_format",
+      videoPath,
+    ],
+    stdout: "piped",
+    stderr: "null",
+  }).spawn();
+
+  if ((await process.status).code) throw new Error("Failed to get video duration");
+
+  const { stdout } = await process.output();
+  const info = JSON.parse(new TextDecoder().decode(stdout));
+  const duration = Math.floor(parseFloat(info.format.duration) || 0);
+
+  await Deno.remove(videoPath);
+  return duration;
+}
