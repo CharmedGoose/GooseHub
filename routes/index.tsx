@@ -25,8 +25,8 @@ export default defineRoute(async () => {
                   </div>
                 </figure>
                 <div class="card-body">
-                  <h2 class="card-title text-orange-400">{video.name}</h2>
-                  <p>{video.description}</p>
+                  <h2 class="card-title text-orange-400 text-ellipsis">{video.name}</h2>
+                  <p class="text-ellipsis">{video.description}</p>
 
                   <div class="card-actions justify-end">
                     <div class="badge">{video.views} views</div>
