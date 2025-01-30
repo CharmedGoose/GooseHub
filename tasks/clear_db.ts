@@ -1,8 +1,6 @@
-import { load } from "$std/dotenv/mod.ts";
+import "$std/dotenv/load.ts";
 // @deno-types="minio/dist/esm/minio.d.mts"
 import * as Minio from "minio";
-
-await load({ allowEmptyValues: true });
 
 const kv = await Deno.openKv(Deno.env.get("DENO_KV_PATH"));
 

@@ -4,10 +4,10 @@
 /// <reference lib="dom.asynciterable" />
 /// <reference lib="deno.ns" />
 
-import { load } from "$std/dotenv/mod.ts";
+import "$std/dotenv/load.ts";
+
 import { start } from "$fresh/server.ts";
 import manifest from "./fresh.gen.ts";
 import config from "./fresh.config.ts";
 
-await load({ allowEmptyValues: true });
 await start(manifest, config);
