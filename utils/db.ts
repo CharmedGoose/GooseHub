@@ -1,4 +1,4 @@
-// Tutorial: https://youtu.be/8jRuV9P5_gA
+// Tutorial for User: https://youtu.be/8jRuV9P5_gA
 /// <reference lib="deno.unstable" />
 
 // @ts-types="minio/dist/esm/minio.d.mts"
@@ -9,21 +9,21 @@ import { generateThumbnailFromVideo, getVideoDuration } from "@utils/ffmpeg.ts";
 
 const { randomUUID } = new ShortUniqueId({ length: 10 });
 
-const kv = await Deno.openKv();
+const kv = await Deno.openKv(Deno.env.get("DENO_KV_PATH"));
 
-const endPoint = Deno.env.get("MINIO_ENDPOINT") || "localhost";
-const port = Number(Deno.env.get("MINIO_PORT"));
-const useSSL = Boolean(Deno.env.get("MINIO_USE_SSL"));
-const bucket = Deno.env.get("MINIO_BUCKET_NAME") || "my_bucket";
+const endPoint = Deno.env.get("S3_ENDPOINT") || "localhost";
+const port = Number(Deno.env.get("S3_PORT"));
+const useSSL = Boolean(Deno.env.get("S3_USE_SSL"));
+const bucket = Deno.env.get("S3_BUCKET_NAME") || "my_bucket";
 export const pathToDB = `${useSSL ? "https" : "http"}://${endPoint}:${port}`;
 
 const minio = new Minio.Client({
   endPoint: endPoint,
   port: port,
   useSSL: useSSL,
-  accessKey: Deno.env.get("MINIO_ACCESS_KEY"),
-  secretKey: Deno.env.get("MINIO_SECRET_KEY"),
-  region: Deno.env.get("MINIO_REGION"),
+  accessKey: Deno.env.get("S3_ACCESS_KEY"),
+  secretKey: Deno.env.get("S3_SECRET_KEY"),
+  region: Deno.env.get("S3_REGION"),
 });
 
 export interface User {
@@ -277,7 +277,7 @@ export async function incrementVideoViews(id: string) {
 async function createBucket() {
   await minio.makeBucket(
     bucket,
-    Deno.env.get("MINIO_REGION"),
+    Deno.env.get("S3_REGION"),
   );
 
   await minio.setBucketPolicy(
