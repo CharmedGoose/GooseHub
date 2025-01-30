@@ -104,7 +104,7 @@ export async function uploadVideo(video: File, user: User): Promise<string> {
   const id = await createUniqueId();
 
   const path = `videos/${id}.${videoType}`;
-  const thumbnailPath = `thumbnails/${id}.png`;
+  const thumbnailPath = `thumbnails/${id}.jpg`;
 
   const videoBuffer = Buffer.from(
     await video.arrayBuffer(),
@@ -171,11 +171,13 @@ export async function uploadVideo(video: File, user: User): Promise<string> {
 }
 
 export async function UpdateThumbnail(video: Video, thumbnail: File) {
-  const thumbnailPath = `thumbnails/${video.id}.png`;
+  const thumbnailPath = `thumbnails/${video.id}.${thumbnail.name.split(".").pop()}`;
 
   const thumbnailBuffer = Buffer.from(
     await thumbnail.arrayBuffer(),
   );
+
+  await minio.removeObject(video.bucket, video.thumbnail);
 
   await minio.putObject(
     video.bucket,
@@ -191,13 +193,7 @@ export async function UpdateThumbnail(video: Video, thumbnail: File) {
     video.user,
   ];
 
-  const videoInfo = await kv.get<Video>(videoKey);
-
-  if (!videoInfo.value) {
-    throw new Error("Video not found");
-  }
-
-  videoInfo.value.thumbnail = thumbnailPath;
+  video.thumbnail = thumbnailPath;
 
   const response = await kv.atomic().set(
     videoKey,
