@@ -15,8 +15,23 @@ export default function EditVideo(props: EditProps) {
   const title = useSignal(video?.name || "Title");
   const description = useSignal("");
 
+  const updateVideo = async (event: Event) => {
+    event.preventDefault();
+
+    const form = new FormData();
+    if (thumbnail.value) form.append("thumbnail", thumbnail.value);
+    form.append("title", title.value);
+    form.append("description", description.value);
+
+    await fetch(`/edit?v=${video.id}`, { method: "POST", body: form });
+
+    setTimeout(() => {
+      globalThis.location.href = `/watch?v=${video.id}`;
+    }, 1000)
+  };
+
   return (
-    <>
+    <main class="flex flex-row h-[calc(100vh-90px)] justify-center items-center">
       <div class="card bg-zinc-900 w-96">
         <div class="card-body items-center text-center">
           <h2 class="card-title">
@@ -27,6 +42,7 @@ export default function EditVideo(props: EditProps) {
             method="post"
             encType="multipart/form-data"
             class="space-y-4 w-full max-w-xs"
+            onSubmit={updateVideo}
           >
             {currentStep.value === 0 // i don't know a better way
               ? (
@@ -53,7 +69,7 @@ export default function EditVideo(props: EditProps) {
           </form>
         </div>
       </div>
-    </>
+    </main>
   );
 }
 
@@ -68,6 +84,7 @@ function UploadThumbnail(
     <>
       <input
         type="file"
+        id="thumbnail-file"
         accept=".png,.jpg,.jpeg"
         onInput={(element) =>
           props.thumbnail.value =
@@ -162,8 +179,7 @@ function SetDescription(
         </button>
         <button
           class="btn btn-primary justify-start"
-          type="button"
-          onClick={() => {}}
+          type="submit"
         >
           Finish!
         </button>

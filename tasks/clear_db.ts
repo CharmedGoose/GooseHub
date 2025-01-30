@@ -25,7 +25,7 @@ console.log("KV cleared");
 console.log("Clearing MinIO bucket");
 
 const objects = minio.listObjects(bucket, "", true);
-objects.forEach(async (obj) => {
+await objects.forEach(async (obj) => {
   await minio.removeObject(
     bucket,
     obj.name,

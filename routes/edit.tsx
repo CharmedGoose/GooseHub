@@ -1,5 +1,5 @@
 import { FreshContext, Handlers, PageProps } from "$fresh/server.ts";
-import { getVideoById, User, Video } from "@utils/db.ts";
+import { getUser, getVideoById, UpdateThumbnail, UpdateVideo, User, Video } from "@utils/db.ts";
 import EditVideo from "@islands/EditVideo.tsx";
 
 interface State {
@@ -13,29 +13,37 @@ interface EditProps {
 
 export const handler: Handlers<EditProps, State> = {
   async GET(_req, ctx) {
-    const upload = ctx.url.searchParams.get("upload");
+    const upload = ctx.url.searchParams.get("upload") == "1";
 
     const video = await CheckUserAndVideo(ctx);
     if (video instanceof Response) return video;
 
-    return await ctx.render({ video, upload: upload == "1" });
+    return await ctx.render({ video, upload });
   },
   async POST(req, ctx) {
-    const upload = ctx.url.searchParams.get("upload");
+    const upload = ctx.url.searchParams.get("upload") == "1";
 
     const video = await CheckUserAndVideo(ctx);
     if (video instanceof Response) return video;
 
     const form = await req.formData();
-    const thumbnail = form.get("thumbnail-file") as File;
-
-    console.log(thumbnail.name);
+    const thumbnail = form.get("thumbnail") as File;
+    const title = form.get("title") as string;
+    const description = form.get("description") as string;
 
     if (thumbnail) {
-      return ctx.render({ video, upload: upload == "1" });
+      UpdateThumbnail(video, thumbnail);
+    }
+    if (title) {
+      video.name = title;
+    }
+    if (description) {
+      video.description = description;
     }
 
-    return ctx.render({ video, upload: upload == "1" });
+    UpdateVideo(video);
+
+    return ctx.render({ video, upload });
   },
 };
 
@@ -43,9 +51,7 @@ export default function Upload(props: PageProps<EditProps>) {
   const { video, upload } = props.data;
 
   return (
-    <main class="flex flex-row h-[calc(100vh-90px)] justify-center items-center">
-      <EditVideo video={video} isUpload={upload} />
-    </main>
+    <EditVideo video={video} isUpload={upload} />
   );
 }
 
@@ -64,9 +70,14 @@ async function CheckUserAndVideo(ctx: FreshContext<State>) {
   if (!video) {
     return ctx.renderNotFound();
   }
+  const user = await getUser(video.user);
+  if (!user) {
+    return ctx.renderNotFound();
+  }
+
   if (
-    (video.user.id !== ctx.state.user.id) &&
-    (video.user.email !== ctx.state.user.email)
+    (user.id !== ctx.state.user.id) &&
+    (user.email !== ctx.state.user.email)
   ) {
     return ctx.renderNotFound();
   }

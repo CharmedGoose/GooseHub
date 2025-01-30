@@ -40,7 +40,7 @@ export interface Video {
   path: string;
   thumbnail: string;
   bucket: string;
-  user: User;
+  user: string;
   description?: string;
   views: number;
   likes: number;
@@ -142,7 +142,7 @@ export async function uploadVideo(video: File, user: User): Promise<string> {
     path,
     bucket,
     thumbnail: thumbnailPath,
-    user,
+    user: user.id,
     views: 0,
     likes: 0,
     dislikes: 0,
@@ -165,6 +165,75 @@ export async function uploadVideo(video: File, user: User): Promise<string> {
   }
 
   return id;
+}
+
+export async function UpdateThumbnail(video: Video, thumbnail: File) {
+  const thumbnailPath = `thumbnails/${video.id}.png`;
+
+  const thumbnailBuffer = Buffer.from(
+    await thumbnail.arrayBuffer(),
+  );
+
+  await minio.putObject(
+    video.bucket,
+    thumbnailPath,
+    thumbnailBuffer,
+    thumbnailBuffer.byteLength,
+  );
+
+  const videoKey = ["videos", video.id];
+  const videoByNameKey = ["videos_by_name", video.name];
+  const videoByUserKey = [
+    "videos_by_user",
+    video.user,
+  ];
+
+  const videoInfo = await kv.get<Video>(videoKey);
+
+  if (!videoInfo.value) {
+    throw new Error("Video not found");
+  }
+
+  videoInfo.value.thumbnail = thumbnailPath;
+
+  const response = await kv.atomic().set(
+    videoKey,
+    video,
+  ).set(
+    videoByNameKey,
+    video,
+  ).set(
+    videoByUserKey,
+    video,
+  ).commit();
+
+  if (!response.ok) {
+    throw new Error("Failed to upload video info to database");
+  }
+}
+
+export async function UpdateVideo(video: Video) {
+  const videoKey = ["videos", video.id];
+  const videoByNameKey = ["videos_by_name", video.name];
+  const videoByUserKey = [
+    "videos_by_user",
+    video.user,
+  ];
+
+  const response = await kv.atomic().set(
+    videoKey,
+    video,
+  ).set(
+    videoByNameKey,
+    video,
+  ).set(
+    videoByUserKey,
+    video,
+  ).commit();
+
+  if (!response.ok) {
+    throw new Error("Failed to upload video info to database");
+  }
 }
 
 export async function getAllVideos(): Promise<
