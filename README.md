@@ -1,10 +1,10 @@
 # GooseHub
 
 > [!IMPORTANT]
-> DON'T post illegal stuff (I will find you if you do) on the website, the DB is hosted by me and I don't want the police coming after me.\
+> DON'T post illegal stuff (I will find you if you do) on the website, the DB is hosted by me and I don't want the police coming after me.
 > Also I only have 200GB for the DB right now (will increase it later) so try to use all my storage I wanna see what y'all post.
 
-A hub with gooses and randonm stuff.  
+A hub with gooses and random stuff.  
 Not weird I promise.  
 
 ## Running Locally
