@@ -11,7 +11,7 @@ export default defineRoute(async () => {
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {videos.map(({ video, thumbnail }) => (
             <a href={`/watch?v=${video.id}`}>
-              <div class="card card-compact bg-base-200 hover:bg-base-300 h-full">
+              <div class="card card-compact bg-zinc-900 hover:bg-zinc-950 h-full">
                 <figure class="aspect-video relative">
                   <img
                     src={thumbnail}
