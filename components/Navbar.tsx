@@ -8,12 +8,12 @@ interface NavbarProps {
 export default function Navbar(props: NavbarProps) {
   return (
     <div>
-      <div class="flex h-[20px] justify-center bg-zinc-900 text-white text-xs">
+      <div class="flex h-[20px] justify-center bg-secondary text-xs">
         <a href="https://discord.gg/3HZabHuYvH" target="_blank">
-          <h1 class="text-zinc-300">Discord</h1>
+          <h1 class="text-accent">Discord</h1>
         </a>
       </div>
-      <div class="navbar bg-zinc-800 text-white h-[70px]">
+      <div class="navbar bg-base-100 base-content h-[70px]">
         <div class="max-w-7xl mx-auto px-4 w-full flex justify-between">
           <div class="navbar-start w-64">
             <a href="/" class="px-0">
@@ -30,7 +30,7 @@ export default function Navbar(props: NavbarProps) {
               <input
                 type="text"
                 placeholder="Search GooseHub"
-                class="w-full px-4 py-2 rounded-md border bg-zinc-700 text-white border-zinc-700 focus:border-orange-400 focus:outline-none"
+                class="w-full px-4 py-2 rounded-md border bg-secondary-content border-secondary-content text-base-content focus:border-primary focus:outline-none hover:border-primary"
               />
             </div>
           </div>
@@ -59,7 +59,7 @@ export default function Navbar(props: NavbarProps) {
                     </div>
                     <ul
                       tabIndex={0}
-                      class="dropdown-content menu bg-zinc-900 rounded-box z-[1] w-40 p-2 shadow"
+                      class="dropdown-content menu bg-base-300 rounded-box z-[1] w-40 p-2 shadow"
                     >
                       <li>
                         <a href={`/signout?success_url=/`}>Sign Out</a>

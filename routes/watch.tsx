@@ -25,6 +25,7 @@ export default defineRoute(async (_req, ctx) => {
           href="https://vjs.zencdn.net/8.16.1/video-js.css"
           rel="stylesheet"
         />
+        <title>{video.name} - GooseHub</title>
       </Head>
       <video
         id="video"

@@ -11,13 +11,13 @@ export default defineRoute(async () => {
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {videos.map(({ video, thumbnail }) => (
             <a href={`/watch?v=${video.id}`}>
-              <div class="card card-compact bg-zinc-900 hover:bg-zinc-950 h-full">
+              <div class="card card-compact bg-secondary hover:bg-neutral h-full">
                 <figure class="aspect-video relative">
                   <img
                     src={thumbnail}
                     alt={video.name}
                   />
-                  <div className="badge badge-outline absolute bottom-2 right-2 bg-black bg-opacity-60">
+                  <div className="badge absolute bottom-2 right-2 bg-base-300 bg-opacity-60">
                     {(() => {
                       const d = new Duration(video.duration * 1000);
                       return `${d.m}:${d.s.toString().padStart(2, "0")}`;
@@ -25,12 +25,12 @@ export default defineRoute(async () => {
                   </div>
                 </figure>
                 <div class="card-body">
-                  <h2 class="card-title text-orange-400 w-65 truncate">
+                  <h2 class="card-title text-primary w-65 truncate">
                     {video.name}
                   </h2>
                   <p class="w-65 truncate">{video.description}</p>
                   <div class="card-actions justify-end">
-                    <div class="badge">{video.views} views</div>
+                    <div class="badge badge-secondary text-base-content">{video.views} views</div>
                   </div>
                 </div>
               </div>

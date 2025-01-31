@@ -4,7 +4,7 @@ import { User } from "@utils/db.ts";
 
 export default defineApp<{ user: User }>((_req, ctx) => {
   return (
-    <html class="bg-black">
+    <html class="bg-black" data-theme="goosehub">
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />

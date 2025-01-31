@@ -30,7 +30,7 @@ export default function EditVideo(props: EditProps) {
 
   return (
     <main class="flex flex-row h-[calc(100vh-90px)] justify-center items-center">
-      <div class="card bg-zinc-900 w-96">
+      <div class="card bg-secondary w-96">
         <div class="card-body items-center text-center">
           <h2 class="card-title">
             {isUpload ? "Upload Video" : "Edit Video"}
@@ -88,7 +88,7 @@ function UploadThumbnail(
           props.thumbnail.value =
             (element.target as HTMLInputElement).files?.[0] ||
             null}
-        class="file-input file-input-bordered w-full max-w-xs bg-zinc-700 text-white hover:border-orange-400"
+        class="file-input file-input-bordered file-input-info w-full max-w-xs text-base-content hover:border-primary"
       />
       <div class="card-actions justify-between">
         <button
@@ -130,7 +130,7 @@ function SetTitle(
         value={props.title.value}
         onInput={(element) =>
           props.title.value = (element.target as HTMLInputElement).value}
-        class="input input-bordered w-full max-w-xs bg-zinc-700 text-white hover:border-orange-400"
+        class="input input-bordered w-full max-w-xs bg-info text-base-content hover:border-primary"
       />
       <div class="card-actions justify-between">
         <button
@@ -165,7 +165,7 @@ function SetDescription(
         value={props.description.value}
         onInput={(element) =>
           props.description.value = (element.target as HTMLInputElement).value}
-        class="textarea textarea-bordered w-full max-w-xs resize-none bg-zinc-700 text-white hover:border-orange-400"
+        class="textarea textarea-bordered w-full max-w-xs resize-none bg-info text-base-content hover:border-primary"
       />
       <div class="card-actions justify-between">
         <button
