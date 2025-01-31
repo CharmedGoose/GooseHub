@@ -1,6 +1,11 @@
-# GooseHub (WIP)
+# GooseHub
 
-A hub with gooses.
+> [!IMPORTANT]
+> DON'T post illegal stuff (I will find you if you do) on the website, the DB is hosted by me and I don't want the police coming after me.\
+> Also I only have 200GB for the DB right now (will increase it later) so try to use all my storage I wanna see what y'all post.
+
+A hub with gooses and randonm stuff.  
+Not weird I promise.  
 
 ## Running Locally
 
@@ -8,18 +13,12 @@ A hub with gooses.
 
     ```bash
     git clone https://github.com/CharmedGoose/GooseHub.git
-    cd ./GooseGub
+    cd ./GooseHub
     ```
 
-1. Fill in `.env.example`
+1. Fill in `.env`
 
-1. Rename `.env.example` to `.env`
-
-1. Set the MinIO bucket default policy for unauthenticated users to download:
-
-    ```bash
-    mc policy set download minio_alias/bucketname
-    ```
+1. Ensure [Deno](https://docs.deno.com/runtime/getting_started/installation/) and [FFmpeg](https://www.ffmpeg.org/download.html) is installed and in $PATH
 
 1. Start the server:
 
@@ -29,7 +28,7 @@ A hub with gooses.
 
 1. Open `http://localhost:8000/` in your browser
 
-## Note
+## Notes
 
 I used Github Copilot for code completions.  
-Also don't look at the source i don't know what i'm doing
+Also don't look at the source i don't know what i'm doing...

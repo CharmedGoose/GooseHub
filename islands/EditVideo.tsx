@@ -25,9 +25,7 @@ export default function EditVideo(props: EditProps) {
 
     await fetch(`/edit?v=${video.id}`, { method: "POST", body: form });
 
-    setTimeout(() => {
-      globalThis.location.href = `/watch?v=${video.id}`;
-    }, 1000)
+    globalThis.location.href = `/watch?v=${video.id}`;
   };
 
   return (

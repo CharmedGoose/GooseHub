@@ -32,7 +32,7 @@ export const handler: Handlers<EditProps, State> = {
     const description = form.get("description") as string;
 
     if (thumbnail) {
-      UpdateThumbnail(video, thumbnail);
+      await UpdateThumbnail(video, thumbnail);
     }
     if (title) {
       video.name = title;
@@ -41,7 +41,7 @@ export const handler: Handlers<EditProps, State> = {
       video.description = description;
     }
 
-    UpdateVideo(video);
+    await UpdateVideo(video);
 
     return ctx.render({ video, upload });
   },
