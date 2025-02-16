@@ -36,12 +36,12 @@ export default function Navbar(props: NavbarProps) {
           </div>
 
           <div class="navbar-end w-64 flex justify-end">
+            <a role="button" href="/upload" class="btn btn-ghost m-1">
+              Upload
+            </a>
             {props.user
               ? (
                 <>
-                  <a role="button" href="/upload" class="btn btn-ghost m-1">
-                    Upload
-                  </a>
                   <div class="dropdown dropdown-end">
                     <div
                       tabIndex={0}

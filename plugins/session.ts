@@ -8,7 +8,7 @@ export interface State {
   user?: User;
 }
 
-export type SignedInState = Required<State>;
+type SignedInState = Required<State>;
 
 export function assertSignedIn(
   ctx: { state: State },

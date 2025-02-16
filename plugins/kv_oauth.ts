@@ -25,6 +25,10 @@ export default {
     {
       path: "/callback",
       async handler(req) {
+        if (req.url.includes("error=access_denied")) {
+          return new Response(null, { status: 302, headers: { Location: "/" } });
+        }
+
         const { response, sessionId, tokens } = await helpers.handleCallback(
           req,
         );
