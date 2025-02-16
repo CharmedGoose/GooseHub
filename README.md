@@ -18,7 +18,7 @@ Not weird I promise.
 
 1. Fill in `.env`
 
-1. Ensure [Deno](https://docs.deno.com/runtime/getting_started/installation/) and [FFmpeg](https://www.ffmpeg.org/download.html) is installed and in $PATH
+1. Ensure [FFmpeg](https://www.ffmpeg.org/download.html) is installed and in $PATH
 
 1. Start the server:
 

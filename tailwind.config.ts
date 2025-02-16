@@ -1,12 +1,13 @@
 import { type Config } from "tailwindcss";
-import daisyui from "daisyui";
+import daisyUI from "daisyui";
 
 export default {
   content: [
     "{routes,islands,components}/**/*.{ts,tsx,js,jsx}",
-  ],
+  ], 
+
   // deno-lint-ignore no-explicit-any
-  plugins: [daisyui as any],
+  plugins: [daisyUI as any],
 
   daisyui: {
     logs: false,
@@ -27,5 +28,5 @@ export default {
         },
       },
     ],
-  },
+  } as daisyUI.Config,
 } satisfies Config;

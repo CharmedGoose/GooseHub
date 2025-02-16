@@ -4,8 +4,9 @@
 // @ts-types="minio/dist/esm/minio.d.mts"
 import * as Minio from "minio";
 import { Buffer } from "node:buffer";
-import ShortUniqueId from "short-unique-id";
+import ShortUniqueId from "npm:short-unique-id@^5.2.0";
 import { generateThumbnailFromVideo, getVideoDuration } from "@utils/ffmpeg.ts";
+import { denoPlugins } from "$fresh/src/build/deps.ts";
 
 const { randomUUID } = new ShortUniqueId({ length: 10 });
 
@@ -31,7 +32,6 @@ export interface User {
   sessionId: string;
   username: string;
   avatar: string;
-  email: string;
 }
 
 export interface Video {
@@ -46,7 +46,18 @@ export interface Video {
   views: number;
   likes: number;
   dislikes: number;
-  comments: string[];
+  createdAt: string;
+  comments: Comment[];
+}
+
+export interface Comment {
+  id: string;
+  video: string;
+  user: string;
+  text: string;
+  likes: number;
+  dislikes: number;
+  createdAt: number;
 }
 
 export async function createOrUpdateUser(user: User) {
@@ -93,12 +104,6 @@ export async function uploadVideo(video: File, user: User): Promise<string> {
     await createBucket();
   }
 
-  await Deno.mkdir("./tmp").catch((err) => {
-    if (!(err instanceof Deno.errors.AlreadyExists)) {
-      throw err;
-    }
-  });
-
   const name = video.name.replace(/\.[^/.]+$/, "");
   const videoType = video.name.split(".").pop();
   const id = await createUniqueId();
@@ -117,19 +122,19 @@ export async function uploadVideo(video: File, user: User): Promise<string> {
     videoBuffer.byteLength,
   );
 
-  await generateThumbnailFromVideo(`${pathToDB}/${bucket}/${path}`, id);
+  const tmpPath = await generateThumbnailFromVideo(`${pathToDB}/${bucket}/${path}`);
   const duration = await getVideoDuration(video);
 
   await minio.fPutObject(
     bucket,
     thumbnailPath,
-    `./tmp/${id}.jpg`,
+    tmpPath,
   ).catch(async (err) => {
-    await Deno.remove(`./tmp/${id}.jpg`);
+    await Deno.remove(tmpPath);
     throw err;
   });
 
-  Deno.remove(`./tmp/${id}.jpg`);
+  Deno.remove(tmpPath);
 
   const videoKey = ["videos", id];
   const videoByNameKey = ["videos_by_name", video.name];
@@ -149,6 +154,7 @@ export async function uploadVideo(video: File, user: User): Promise<string> {
     views: 0,
     likes: 0,
     dislikes: 0,
+    createdAt: new Date().toUTCString(),
     comments: [],
   };
 
@@ -157,10 +163,10 @@ export async function uploadVideo(video: File, user: User): Promise<string> {
     videoInfo,
   ).set(
     videoByNameKey,
-    videoInfo,
+    id,
   ).set(
     videoByUserKey,
-    videoInfo,
+    id,
   ).commit();
 
   if (!response.ok) {
@@ -170,7 +176,7 @@ export async function uploadVideo(video: File, user: User): Promise<string> {
   return id;
 }
 
-export async function UpdateThumbnail(video: Video, thumbnail: File) {
+export async function updateThumbnail(video: Video, thumbnail: File) {
   const thumbnailPath = `thumbnails/${video.id}.${thumbnail.name.split(".").pop()}`;
 
   const thumbnailBuffer = Buffer.from(
@@ -187,22 +193,13 @@ export async function UpdateThumbnail(video: Video, thumbnail: File) {
   );
 
   const videoKey = ["videos", video.id];
-  const videoByNameKey = ["videos_by_name", video.name];
-  const videoByUserKey = [
-    "videos_by_user",
-    video.user,
-  ];
 
   video.thumbnail = thumbnailPath;
 
+  await kv.delete(videoKey);
+
   const response = await kv.atomic().set(
     videoKey,
-    video,
-  ).set(
-    videoByNameKey,
-    video,
-  ).set(
-    videoByUserKey,
     video,
   ).commit();
 
@@ -211,23 +208,19 @@ export async function UpdateThumbnail(video: Video, thumbnail: File) {
   }
 }
 
-export async function UpdateVideo(video: Video) {
+export async function updateVideo(video: Video) {
   const videoKey = ["videos", video.id];
   const videoByNameKey = ["videos_by_name", video.name];
-  const videoByUserKey = [
-    "videos_by_user",
-    video.user,
-  ];
+
+  kv.delete(videoKey);
+  kv.delete(videoByNameKey);
 
   const response = await kv.atomic().set(
     videoKey,
     video,
   ).set(
     videoByNameKey,
-    video,
-  ).set(
-    videoByUserKey,
-    video,
+    video.id,
   ).commit();
 
   if (!response.ok) {
