@@ -1,5 +1,5 @@
 import { FreshContext, Handlers, PageProps } from "$fresh/server.ts";
-import { getUser, getVideoById, UpdateThumbnail, UpdateVideo, User, Video } from "@utils/db.ts";
+import { getUser, getVideoById, updateThumbnail, updateVideo, User, Video } from "@utils/db.ts";
 import EditVideo from "@islands/EditVideo.tsx";
 
 interface State {
@@ -32,7 +32,7 @@ export const handler: Handlers<EditProps, State> = {
     const description = form.get("description") as string;
 
     if (thumbnail) {
-      await UpdateThumbnail(video, thumbnail);
+      await updateThumbnail(video, thumbnail);
     }
     if (title) {
       video.name = title;
@@ -41,7 +41,7 @@ export const handler: Handlers<EditProps, State> = {
       video.description = description;
     }
 
-    await UpdateVideo(video);
+    await updateVideo(video);
 
     return ctx.render({ video, upload });
   },
@@ -76,8 +76,7 @@ async function CheckUserAndVideo(ctx: FreshContext<State>) {
   }
 
   if (
-    (user.id !== ctx.state.user.id) &&
-    (user.email !== ctx.state.user.email)
+    user.id !== ctx.state.user.id
   ) {
     return ctx.renderNotFound();
   }

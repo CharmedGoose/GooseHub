@@ -6,7 +6,6 @@ import * as Minio from "minio";
 import { Buffer } from "node:buffer";
 import ShortUniqueId from "npm:short-unique-id@^5.2.0";
 import { generateThumbnailFromVideo, getVideoDuration } from "@utils/ffmpeg.ts";
-import { denoPlugins } from "$fresh/src/build/deps.ts";
 
 const { randomUUID } = new ShortUniqueId({ length: 10 });
 
@@ -106,10 +105,10 @@ export async function uploadVideo(video: File, user: User): Promise<string> {
 
   const name = video.name.replace(/\.[^/.]+$/, "");
   const videoType = video.name.split(".").pop();
-  const id = await createUniqueId();
+  const id = await createUniqueVideoId();
 
   const path = `videos/${id}.${videoType}`;
-  const thumbnailPath = `thumbnails/${id}.jpg`;
+  const thumbnailPath = `thumbnails/${id}.webp`;
 
   const videoBuffer = Buffer.from(
     await video.arrayBuffer(),
@@ -293,10 +292,10 @@ async function createBucket() {
   );
 }
 
-async function createUniqueId() {
+async function createUniqueVideoId() {
   const id = randomUUID();
   if (await getVideoById(id)) {
-    return createUniqueId();
+    return createUniqueVideoId();
   }
   return id;
 }

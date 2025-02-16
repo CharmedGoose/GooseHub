@@ -1,9 +1,10 @@
 export async function generateThumbnailFromVideo(
   path: string,
 ): Promise<string> {
-  const tmpPath = await Deno.makeTempFile({ suffix: ".jpg" });
+  const tmpPath = await Deno.makeTempFile({ suffix: ".webp" });
   const thumbnailProcess = new Deno.Command("ffmpeg", {
     args: [
+      "-y",
       "-i",
       path,
       "-ss",
@@ -14,6 +15,8 @@ export async function generateThumbnailFromVideo(
       "4",
       "-vframes",
       "1",
+      "-c:v",
+      "libwebp",
       tmpPath,
     ],
     stdout: "null",
