@@ -77,6 +77,23 @@ export async function createOrUpdateUser(user: User) {
   }
 }
 
+export async function resetUserAPIToken(user: User): Promise<string> {
+  const token = crypto.randomUUID().replace(/-/gi, "");
+  const tokenKey = ["tokens", token];
+
+  await createOrUpdateUser({ ...user, apiToken: token } as User);
+
+  const response = await kv.atomic()
+    .set(tokenKey, user.id)
+    .commit();
+  
+  if (!response.ok) {
+    throw new Error("Failed to reset user API token");
+  }
+
+  return token;
+}
+
 export async function deleteUserBySession(sessionId: string) {
   await kv.delete(["users_by_session", sessionId]);
 }
@@ -122,7 +139,9 @@ export async function uploadVideo(video: File, user: User): Promise<string> {
     videoBuffer.byteLength,
   );
 
-  const tmpPath = await generateThumbnailFromVideo(`${pathToDB}/${bucket}/${path}`);
+  const tmpPath = await generateThumbnailFromVideo(
+    `${pathToDB}/${bucket}/${path}`,
+  );
   const duration = await getVideoDuration(video);
 
   await minio.fPutObject(
@@ -177,7 +196,9 @@ export async function uploadVideo(video: File, user: User): Promise<string> {
 }
 
 export async function updateThumbnail(video: Video, thumbnail: File) {
-  const thumbnailPath = `thumbnails/${video.id}.${thumbnail.name.split(".").pop()}`;
+  const thumbnailPath = `thumbnails/${video.id}.${
+    thumbnail.name.split(".").pop()
+  }`;
 
   const thumbnailBuffer = Buffer.from(
     await thumbnail.arrayBuffer(),

@@ -1,6 +1,6 @@
 import { defineRoute, Handlers } from "$fresh/server.ts";
 import APITOKEN from "@islands/APIToken.tsx";
-import { createOrUpdateUser, User } from "@utils/db.ts";
+import { resetUserAPIToken, User } from "@utils/db.ts";
 
 export const handler: Handlers = {
   async GET(_req, ctx) {
@@ -13,9 +13,7 @@ export const handler: Handlers = {
       return new Response("401 Unauthorized", { status: 401 });
     }
     
-    const token = crypto.randomUUID().replace(/-/gi, "");
-
-    await createOrUpdateUser({ ...ctx.state.user, apiToken: token } as User);
+    const token = await resetUserAPIToken(ctx.state.user as User);
 
     return new Response(null, { headers: { "apiKey": token } });
   },
@@ -30,7 +28,6 @@ export default defineRoute<{ user: User }>((_req, ctx) => {
             <h1 className="text-5xl font-bold">API Token</h1>
             <p className="py-6">
               Get your API token here!<br/>
-              Username: {ctx.state.user.username}
             </p>
             <APITOKEN user={ctx.state.user} />
           </div>
