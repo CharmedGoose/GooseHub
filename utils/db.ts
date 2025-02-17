@@ -31,6 +31,7 @@ export interface User {
   sessionId: string;
   username: string;
   avatar: string;
+  apiToken?: string;
 }
 
 export interface Video {

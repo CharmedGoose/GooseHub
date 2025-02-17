@@ -51,7 +51,7 @@ export default function Navbar(props: NavbarProps) {
                       <div className="avatar">
                         <div className="w-[38px] rounded-full">
                           <img
-                            src={`https://cdn.discordapp.com/avatars/${props.user.id}/${props.user.avatar}.png`}
+                            src={props.user.avatar}
                             alt="Avatar"
                           />
                         </div>
@@ -61,6 +61,9 @@ export default function Navbar(props: NavbarProps) {
                       tabIndex={0}
                       class="dropdown-content menu bg-base-300 rounded-box z-[1] w-40 p-2 shadow"
                     >
+                      <li>
+                        <a href={`/settings`}>Settings</a>
+                      </li>
                       <li>
                         <a href={`/signout?success_url=/`}>Sign Out</a>
                       </li>

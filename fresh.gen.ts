@@ -8,8 +8,12 @@ import * as $_middleware from "./routes/_middleware.tsx";
 import * as $api_joke from "./routes/api/joke.ts";
 import * as $edit from "./routes/edit.tsx";
 import * as $index from "./routes/index.tsx";
+import * as $settings_layout from "./routes/settings/_layout.tsx";
+import * as $settings_api from "./routes/settings/api.tsx";
+import * as $settings_index from "./routes/settings/index.tsx";
 import * as $upload from "./routes/upload.tsx";
 import * as $watch from "./routes/watch.tsx";
+import * as $APIToken from "./islands/APIToken.tsx";
 import * as $EditVideo from "./islands/EditVideo.tsx";
 import * as $UploadVideo from "./islands/UploadVideo.tsx";
 import type { Manifest } from "$fresh/server.ts";
@@ -22,10 +26,14 @@ const manifest = {
     "./routes/api/joke.ts": $api_joke,
     "./routes/edit.tsx": $edit,
     "./routes/index.tsx": $index,
+    "./routes/settings/_layout.tsx": $settings_layout,
+    "./routes/settings/api.tsx": $settings_api,
+    "./routes/settings/index.tsx": $settings_index,
     "./routes/upload.tsx": $upload,
     "./routes/watch.tsx": $watch,
   },
   islands: {
+    "./islands/APIToken.tsx": $APIToken,
     "./islands/EditVideo.tsx": $EditVideo,
     "./islands/UploadVideo.tsx": $UploadVideo,
   },

@@ -76,7 +76,7 @@ async function CheckUserAndVideo(ctx: FreshContext<State>) {
   }
 
   if (
-    user.id !== ctx.state.user.id
+    user.sessionId !== ctx.state.user.sessionId
   ) {
     return ctx.renderNotFound();
   }

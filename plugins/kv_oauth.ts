@@ -54,7 +54,7 @@ export default {
             id: discordUser.id,
             sessionId,
             username: discordUser.username,
-            avatar: discordUser.avatar,
+            avatar: `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.webp`,
           };
 
           await createOrUpdateUser(newUser);
