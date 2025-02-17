@@ -13,6 +13,8 @@ export const handler: Handlers<UploadProps> = {
     });
   },
   async POST(req, ctx) {
+    if (!ctx.state.user) ctx.render({  message: "You must be logged in to upload a video." });
+
     const form = await req.formData();
     const file = form.get("video-file") as File;
 
@@ -29,7 +31,7 @@ export const handler: Handlers<UploadProps> = {
     } catch (error: unknown) {
       const errorMessage = error instanceof Error
         ? error.message
-        : "An unknown error occurred";
+        : "An unknown error occurred.";
       return ctx.render({
         message: errorMessage,
       });

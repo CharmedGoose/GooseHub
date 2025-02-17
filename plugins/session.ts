@@ -41,6 +41,10 @@ export default {
     {
       path: "/edit",
       middleware: { handler: ensureSignedIn },
+    },
+    {
+      path: "/settings/",
+      middleware: { handler: ensureSignedIn },
     }
   ],
 } as Plugin<State>;
